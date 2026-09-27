@@ -72,12 +72,9 @@ def search_commons(q, n):
             continue
         em = ii.get("extmetadata", {})
         lic = em.get("LicenseShortName", {}).get("value", "?")
-        # ⚠️ Commons 搜索结果里 CC BY-SA 往往占大多数。share-alike 有传染性
-        # （严格说会要求整条视频以同协议发布），对商用账号是坑 —— 选完图才发现
-        # 就得整轮重搜，所以在这里直接丢掉。Openverse 侧靠 license=cc0,pdm,by
-        # 已经滤掉了，Commons 的 API 没有对应的过滤参数，只能自己判。
-        if "SA" in lic.upper():
-            continue
+        # 不做授权过滤：全部返回，授权名标在 contact sheet 上由人工审。
+        # ⚠️ 但要知道 Commons 结果里 CC BY-SA 占比很高，share-alike 对商用账号有传染性
+        # （见 CLAUDE.md 坑表），挑图时留意 sheet 上的标注。
         out.append({
             "title": p["title"][5:],
             "thumb": t.split("?")[0],          # 去 query，否则后续会 400
@@ -170,7 +167,7 @@ def cmd_sheet(a):
                 sheet.paste(t, (cx, cy))
             else:
                 d.rectangle([cx, cy, cx + CELL, cy + CELL], fill=(228, 205, 205))
-            d.text((cx + 3, cy + CELL + 3), f"{i} {uniq[i]['lic'][:12]}", fill=(0, 0, 0))
+            d.text((cx + 3, cy + CELL + 3), f"{i} {uniq[i]['lic'][:16]}", fill=(0, 0, 0))
         sheet.save(out / f"sheet_{name}.png")
         print(f"  {name}: {n} 张候选 → {out}/sheet_{name}.png"
               f"（灰块 = 长宽比不合格被跳过）")

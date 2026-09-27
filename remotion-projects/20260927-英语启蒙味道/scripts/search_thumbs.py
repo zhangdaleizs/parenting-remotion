@@ -15,7 +15,7 @@ import time
 import urllib.parse
 import urllib.request
 
-from PIL import Image
+from PIL import Image, ImageDraw
 
 UA = "parenting-remotion-thumb-picker/1.0 (local educational project)"
 OUT = "/tmp/thumbsearch"
@@ -85,16 +85,11 @@ def search(kw, limit=24):
         cand.append({"title": p["title"], "w": w, "h": h,
                      "thumb": ii.get("thumburl"), "full": ii.get("url")})
 
-    # 授权过滤：CC BY-SA 的 share-alike 对商用账号有传染性，一律排除
+    # 不做授权过滤：全部返回，授权名标在 contact sheet 上由人工审
     lic = licenses([c["title"] for c in cand])
-    out = []
     for c in cand:
-        name = lic.get(c["title"], "?")
-        if "SA" in name.upper():
-            continue
-        c["license"] = name
-        out.append(c)
-    return out
+        c["license"] = lic.get(c["title"], "?")
+    return cand
 
 
 def download(url, path, tries=4):
@@ -112,21 +107,24 @@ def download(url, path, tries=4):
     raise last
 
 
-def contact_sheet(key, items, cell=260, cols=4):
+def contact_sheet(key, items, cell=260, cols=4, lbl=22):
     rows = (len(items) + cols - 1) // cols
     if not rows:
         return None
-    sheet = Image.new("RGB", (cols * cell, rows * cell), (245, 245, 245))
+    sheet = Image.new("RGB", (cols * cell, rows * (cell + lbl)), (245, 245, 245))
+    dr = ImageDraw.Draw(sheet)
     for i, it in enumerate(items):
         p = os.path.join(OUT, f"{key}_{i}.jpg")
         try:
             im = Image.open(p).convert("RGB")
         except Exception:
             continue
-        im.thumbnail((cell - 8, cell - 8))
-        x = (i % cols) * cell + (cell - im.width) // 2
-        y = (i // cols) * cell + (cell - im.height) // 2
-        sheet.paste(im, (x, y))
+        im.thumbnail((cell - 8, cell - 8 - lbl))
+        cx = (i % cols) * cell
+        cy = (i // cols) * (cell + lbl)
+        sheet.paste(im, (cx + (cell - im.width) // 2, cy + 4))
+        # 编号 + 授权名：挑图时靠它判断能不能商用
+        dr.text((cx + 4, cy + cell - lbl + 4), f"{i} {it.get('license', '?')[:16]}", fill=(0, 0, 0))
     path = os.path.join(OUT, f"sheet_{key}.png")
     sheet.save(path)
     return path

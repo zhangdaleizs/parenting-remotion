@@ -3,7 +3,7 @@ name: word-grid-card
 description: >-
   单词网格高亮型视频完整开发流程（抖音/视频号，3×4 网格单词卡常驻 + 念到哪张哪张变橙，卡内带音标）。
   流程：形态判断 → 拆解参考片（下载/双模式转写/逐像素量版式）→ 词汇表 → 音频先行 → 图片素材
-  （含 CC BY-SA 授权过滤）→ 写代码 → 渲染/响度 → 封面/发布。
+  （授权名标在总览图上）→ 写代码 → 渲染/响度 → 封面/发布。
   是 word-list-card（单列列表型）的网格变体 —— 动画逻辑同源，布局与卡内排布不同。
   触发词：单词网格、网格单词卡、3×4 单词卡、九宫格单词、带音标单词卡、
   味道单词、水果/蔬菜/动物/颜色类单词视频。
@@ -206,22 +206,19 @@ python3 .agents/skills/word-list-card/scripts/find_images.py fetch \
   --prefix-map "sweet=s01_sweet" "sour=s02_sour"
 ```
 
-### 4.1 ⚠️ 授权：**必须过滤 CC BY-SA**
+### 4.1 授权：脚本不过滤，靠总览图人工审
 
-这是本形态最容易翻车的一环 —— **Commons 搜索结果里 CC BY-SA 往往占大多数**
-（实测第一轮选题 12 张里 11 张是 BY-SA）。share-alike 有传染性，严格说会要求整条视频
-以同协议发布，对商用账号是坑。而**光看搜索结果看不出来**，`LicenseShortName` 要查 API 才知道。
+**Commons 搜索结果里 CC BY-SA 往往占大多数**（实测某轮 12 张里 11 张是 BY-SA）。
+share-alike 有传染性 —— 严格说会要求整条视频以同协议发布，对商用账号是坑。
 
-- 脚本的 **Openverse 侧**已用 `license=cc0,pdm,by` 过滤 ✓
-- 脚本的 **Commons 侧**已在 `search_commons()` 里剔除含 `SA` 的条目 ✓（2026-09-27 补上）
-- 自己写脚本时：`iiprop=extmetadata` 取 `LicenseShortName`，**批量查**（一次可传 40 个 title，别逐张查）
+**脚本不做过滤**，授权名直接标在 contact sheet 每格下方，挑图时自己看。
+（`LicenseShortName` 要查 API 才知道，光看搜索结果看不出来：`iiprop=extmetadata` 取，
+**批量查**，一次可传 40 个 title，别逐张查。）
 
-**过滤后候选会骤减**（`sweet` 只剩 3 张、`sour` 的好图全没了变成复古插画），所以：
-搜索一次多取（`gsrlimit=48` 再截前 12），**关键词多备几个** ——
-`sour` 从 `lemon fruit whole` 换成 `lemon slices` 才有货。
+这样不会因为脚本写死的过滤规则错过好图，代价是**挑图时得留意每格下方的授权名**。
 
 产出要求：CC0 / Public Domain / CC BY 三类皆可，**CC BY 要在发布简介里署名**
-（逐张列进 `release-info.md` 的授权表）。
+（逐张列进 `release-info.md` 的授权表）；CC BY-SA 尽量避开。
 
 ### 4.2 其它三个坑
 
@@ -349,7 +346,7 @@ Remotion 直出约 −25 LUFS，参考片同类成片约 −11 LUFS，**差 14dB
 
 ## 常见返工点（按出现频率排）
 
-1. **素材混进 CC BY-SA** → 选完图才发现，整轮重搜。**搜图阶段就过滤**（脚本已内置）
+1. **素材混进 CC BY-SA** → share-alike 有传染性。授权名标在总览图上，挑图时看清再选
 2. **英文被当中文念** → 音色选错、词没大写、或 `speed_ratio` 抬太高
 3. **卡内四段糊在一起** → 音标和中文挨太近；缩略图看不出，**渲染后放大 2× 核对**
 4. **网格放不下** → 词数 >12 或中文 >4 字，卡高被压得太小

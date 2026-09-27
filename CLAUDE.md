@@ -193,7 +193,7 @@ y=1365  └ 网格底 ┘
 - **高亮**：卡音频起点 **+6 帧**开始，米白→亮橙 15 帧，退出**硬切**（与「单词列表高亮型」同规则）
 - **音标**：参考片卡片里**没有音标**，是这类视频可以加的增量。取**英式**（配 Tina老师 中/英式英语音色），
   按牛津体例去掉可选 (r) —— `sour /ˈsaʊə/`、`bitter /ˈbɪtə/`、`burned /bɜːnd/`
-- **素材走图库**（Wikimedia Commons）—— ⚠️ **搜图阶段就必须按授权过滤**，见坑表「图库选图混进 CC BY-SA」
+- **素材走图库**（Wikimedia Commons）—— 授权名标在 contact sheet 上，挑图时自己审，见坑表「图库选图混进 CC BY-SA」
 - 色板：底 `#E8E0F4`（+ 径向渐变 + 噪点，**刻意不同于源片的米黄 `#FCF9E3`**）/ 卡 `#FEF4E2` / 高亮 `#FE902C`
 - 样板：`remotion-projects/20260927-英语启蒙味道`（12 卡 / 23.85s，源片 20.53s）
 - 完整分镜与参数见该项目的 `docs/storyboard.md` + `docs/release-info.md`
@@ -514,7 +514,7 @@ const FADE_IN = 14, FADE_OUT = 9;
 | **系统字体栈在 headless Chrome 里 fallback 成过粗字形** | `fontFamily: '"Helvetica Neue", Helvetica, Arial'` 在 chrome-headless-shell 里 fallback 到别的字体，`fontWeight` 从 400 调到 700 几乎无变化，墨迹占比 0.361（源片 0.292）—— 字重参数形同虚设 | 用 **`@remotion/google-fonts`** 加载确定字体（如 `Arimo` = Arial 度量兼容），并**用墨迹占比校准字重**：把渲染帧缩到源片分辨率，算暗像素占比，调到与源片一致（本例最终 **fontWeight 400**） |
 | **Wikimedia Commons 缩略图尺寸改不动** | 把 API 返回的 `.../250px-X.jpg` 里的尺寸替换成 400/640/800 一律返回 `400 Use thumbnail sizes listed on ...`；API 的 `iiurlwidth` 也只产出 250px 一档 | 别指望在 URL 层面改尺寸。要么接受 API 给的尺寸（本例缩略图最终只显示 92px，250px 源足够），要么重新请求 API 并解析它生成的合法 URL |
 | **图库搜食材，搜出来的是料理成品/田间植株** | Openverse 搜 `daikon radish` 出来一堆炖菜和汤；Commons 搜 `loofah` 全是丝瓜藤、架子、菜地 —— 且宽幅原图**裁成方图后只剩一根胡萝卜的中段** | 两道过滤：①**按长宽比 0.72–1.4 过滤**再挑（配合 `crop` 中心方裁）；②拼 contact sheet 用 Read 逐张看，别只看搜索结果标题。选出候选后**下载原图再确认一次**（小图看不出是不是干丝瓜络） |
-| **图库选图混进 CC BY-SA，发布前才发现** | Commons 搜索结果里 **CC BY-SA 占大多数**（实测第一轮 12 张里 11 张是 BY-SA）。share-alike 有传染性 —— 严格说会要求整条视频以同协议发布，对商用账号是坑。而 `LicenseShortName` 只有逐个查 API 才知道，光看搜索结果看不出来 | **搜图阶段就按授权过滤**：批量请求 `iiprop=extmetadata` 取 `LicenseShortName`（一次可查 40 个 title，别逐张查），**含 `SA` 的一律丢弃**。过滤后候选会骤减（实测 `sweet` 只剩 3 张、`sour` 的好图全没了），所以**搜索要一次多取**（`gsrlimit=48` 再截前 12），关键词也得多备几个（`sour` 从 `lemon fruit whole` 换成 `lemon slices` 才有货）。见 `20260927-英语启蒙味道/scripts/search_thumbs.py` |
+| **图库选图混进 CC BY-SA，发布前才发现** | Commons 搜索结果里 **CC BY-SA 占大多数**（实测某轮 12 张里 11 张是 BY-SA）。share-alike 有传染性 —— 严格说会要求整条视频以同协议发布，对商用账号是坑。而 `LicenseShortName` 光看搜索结果看不出来，要查 API 才知道 | **授权名标在总览图上，挑图时自己审**（`scripts/find_images.py` 的 sheet 每格下方会印，脚本**不做过滤** —— 用户要自己审，别让脚本替他筛掉）。`iiprop=extmetadata` 批量取授权（一次可传 40 个 title，别逐张查）。挑完在 `release-info.md` 里逐张列授权 + 来源页 |
 | **透明 PNG 当缩略图变黑块** | 图库里的 PNG（如 `Red Chili Pepper PNG.png`）带透明通道，`PIL.Image.convert("RGB")` 会把透明区填成**黑色**，贴到浅色卡片上就是一坨黑方块 | 转 RGB 前先在白底上合成：`im.convert("RGBA")` → `Image.alpha_composite(白底, im)` → `convert("RGB")` |
 | **图表/文字下载被 Commons 限速 429** | 连续请求原图会回 `HTTP 429 Too Many Requests`（实测下到第 3 张就被挡） | ①缩略图场景**别拉原图** —— 搜图时 API 返回的 `iiurlwidth=400` 缩略图够用（最终只显示 ~100px）；②请求间隔 1s + 退避重试；③批量接口一次查多个 title，别循环单查 |
 
@@ -643,7 +643,7 @@ mv out/final_norm.mp4 out/final.mp4
 ## 技能库（.claude/skills/）
 
 - **流程**：`english-rhyme-card`（**英语启蒙歌谣卡完整开发流程**，中英双语 + SVG 卡通场景，7 阶段含验收标准）
-- **流程**：`word-list-card`（**单词列表高亮型完整开发流程**，单列 N 行词卡 + 逐行高亮，8 阶段含验收标准；**内含 `scripts/find_images.py` —— 免 key 图库搜图工具**，Commons + Openverse 搜索、长宽比过滤、**Commons 侧 CC BY-SA 过滤**、拼 contact sheet、裁方取图）
+- **流程**：`word-list-card`（**单词列表高亮型完整开发流程**，单列 N 行词卡 + 逐行高亮，8 阶段含验收标准；**内含 `scripts/find_images.py` —— 免 key 图库搜图工具**，Commons + Openverse 搜索、长宽比过滤、**授权名标注（不过滤，人工审）**、拼 contact sheet、裁方取图）
 - **流程**：`word-grid-card`（**单词网格高亮型完整开发流程**，3×4 网格 + 逐卡高亮 + 卡内音标，8 阶段含验收标准。`word-list-card` 的**网格变体**：动画逻辑同源，差异在布局 / 卡内四段 / 无外层容器；搜图复用上面的 `find_images.py`）
 - **技术**：`remotion-best-practices`、`remotion-create`、`remotion-render`、`remotion-markup`、`remotion-captions`、`mediabunny`
 - **素材**：`bgm`（BGM）、`tts`（配音）、`douyin-downloader`、`video-batch-download`（拆参考视频）

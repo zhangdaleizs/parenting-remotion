@@ -227,7 +227,7 @@ python3 .agents/skills/word-list-card/scripts/find_images.py fetch \
 | **小图看不出问题** | 挑中的「丝瓜」放大后是干丝瓜络。**下载原图再确认一次**（脚本的 fetch 就是干这个） |
 | **Commons 缩略图尺寸改不动** | 把 URL 里的 `250px` 改成 400/640/800 一律 `400 Use thumbnail sizes listed on ...`。别折腾，用 API 给的尺寸即可（最终只显示 ~92px） |
 | **Commons 连续请求会被限流** | 搜出来 0 结果。脚本已内置 `sleep`，自己写脚本时也要加 |
-| **授权** | CC0 / Public Domain 最干净；**CC BY 要在发布简介里署名**；CC BY-SA 有 copyleft 争议，尽量避开。`release-info.md` 的发布清单里留一条待办 |
+| **授权** | 脚本**不做过滤**，授权名印在 contact sheet 每格下方，挑图时自己审。CC0 / Public Domain 最干净；**CC BY 要在发布简介里署名**；CC BY-SA 有 copyleft 争议，尽量避开。`release-info.md` 的发布清单里留一条待办 |
 
 ### 4.4 背景
 
