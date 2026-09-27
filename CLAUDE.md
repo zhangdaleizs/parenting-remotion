@@ -409,6 +409,10 @@ const SFX: { from: number; file: string; volume: number }[] = [
 
 ⚠️ **BGM 全程铺满**（参考视频实测无静音段），音量 0.08-0.12，**不要有留白**。
 
+🎵 **默认 BGM 用 `bgm/flying-squirrel.mp3`** —— 2026-09-27 用户试听后选定，后续项目一律先用它
+（试听满意前不要换）。`bgm/` 下另有 5 首备用：`piano-clear` / `beat26` / `drum-heat` /
+`dynamic-rhythm` / `bgm`。取用时 `cp bgm/flying-squirrel.mp3 <项目>/public/audio/bgm.mp3`。
+
 ---
 
 ## 核心编码规范

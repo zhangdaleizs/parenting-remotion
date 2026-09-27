@@ -11,8 +11,7 @@ out/
 reference/
 
 # ===== 音乐素材库 =====
-# bgm/ 是从网易云下载的第三方音乐（14M）
-bgm/
+# bgm/ 是要提交的：flying-squirrel.mp3 是用户选定的常用 BGM（14M / 6 首）
 
 # ===== 密钥 =====
 # TTS key 存在 tools/tts/.env（格式见同目录 .env.example）
