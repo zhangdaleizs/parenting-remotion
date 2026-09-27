@@ -1,0 +1,12 @@
+[
+  { "text": "你拍一，我拍一，英文 one 就是 one。one，one，one。", "voice_id": "zh_female_shaoergushi_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s01.mp3" },
+  { "text": "你拍二，我拍二，英文 two 就是 two。two，two，two。", "voice_id": "zh_female_shaoergushi_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s02.mp3" },
+  { "text": "你拍三，我拍三，英文 three 就是 three。three，three，three。", "voice_id": "zh_female_shaoergushi_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s03.mp3" },
+  { "text": "你拍四，我拍四，英文 four 就是 four。four，four，four。", "voice_id": "zh_female_shaoergushi_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s04.mp3" },
+  { "text": "你拍五，我拍五，英文 five 就是 five。five，five，five。", "voice_id": "zh_female_shaoergushi_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s05.mp3" },
+  { "text": "你拍六，我拍六，英文 six 就是 six。six，six，six。", "voice_id": "zh_female_shaoergushi_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s06.mp3" },
+  { "text": "你拍七，我拍七，英文 seven 就是 seven。seven，seven，seven。", "voice_id": "zh_female_shaoergushi_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s07.mp3" },
+  { "text": "你拍八，我拍八，英文 eight 就是 eight。eight，eight，eight。", "voice_id": "zh_female_shaoergushi_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s08.mp3" },
+  { "text": "你拍九，我拍九，英文 nine 就是 nine。nine，nine，nine。", "voice_id": "zh_female_shaoergushi_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s09.mp3" },
+  { "text": "你拍十，我拍十，英文 ten 就是 ten。ten，ten，ten。", "voice_id": "zh_female_shaoergushi_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s10.mp3" }
+]

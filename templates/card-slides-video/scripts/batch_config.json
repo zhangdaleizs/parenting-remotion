@@ -1,0 +1,26 @@
+[
+  {
+    "text": "买一盒剩 12，买两盒反而差 10，一共带了多少钱？",
+    "voice_id": "zh_female_yingyujiaoyu_mars_bigtts",
+    "speed_ratio": 1.0,
+    "output": "question.mp3"
+  },
+  {
+    "text": "看仔细：买一盒剩 12，买两盒差 10。差的这 10 补上剩的 12，正好是一盒的钱——12 加 10 得 22。再算带的钱，22 加 12，一共 34 元！",
+    "voice_id": "zh_female_yingyujiaoyu_mars_bigtts",
+    "speed_ratio": 1.0,
+    "output": "derive.mp3"
+  },
+  {
+    "text": "换一题：买一盒剩 8，买两盒差 6。8 加 6 得 14，一盒 14 元！",
+    "voice_id": "zh_female_yingyujiaoyu_mars_bigtts",
+    "speed_ratio": 1.0,
+    "output": "practice.mp3"
+  },
+  {
+    "text": "记住：剩的加差的，就是一盒的钱！收藏起来，下期见！",
+    "voice_id": "zh_female_yingyujiaoyu_mars_bigtts",
+    "speed_ratio": 1.0,
+    "output": "outro.mp3"
+  }
+]

@@ -1,0 +1,14 @@
+[
+  { "text": "Sweet，甜的。",    "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s01.mp3" },
+  { "text": "Sour，酸的。",     "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s02.mp3" },
+  { "text": "Bitter，苦的。",   "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s03.mp3" },
+  { "text": "Spicy，辣的。",    "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s04.mp3" },
+  { "text": "Salty，咸的。",    "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s05.mp3" },
+  { "text": "Crispy，酥脆的。",  "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s06.mp3" },
+  { "text": "Soft，软的。",     "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s07.mp3" },
+  { "text": "Juicy，多汁的。",  "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s08.mp3" },
+  { "text": "Greasy，油腻的。",  "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s09.mp3" },
+  { "text": "Tough，难嚼的。",  "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s10.mp3" },
+  { "text": "Mild，清淡的。",   "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s11.mp3" },
+  { "text": "Burned，烧焦的。",  "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s12.mp3" }
+]

@@ -1,0 +1,22 @@
+[
+  {"query": "https://v.douyin.com/ZakgJFqsJ2w/ 这个视频帮我复刻一下", "should_trigger": true},
+  {"query": "刷到一条特别好的育儿视频，我想做成咱们自己的一版，你帮我看看怎么弄", "should_trigger": true},
+  {"query": "这条爆款分享4万多，数据很好，照着做一条同款", "should_trigger": true},
+  {"query": "帮我把这个视频拆解一下然后重做一遍，换成我们的视觉", "should_trigger": true},
+  {"query": "https://www.bilibili.com/video/BV1xx411c7mD 这条仿一个出来", "should_trigger": true},
+  {"query": "把这条参考片的骨架扒出来，做一条 60 秒的版本", "should_trigger": true},
+  {"query": "这条视频的节奏我特别喜欢，我们照这个来一版行吗", "should_trigger": true},
+  {"query": "抄一下这条的做法，内容重新组织，视觉用我们自己的卡片", "should_trigger": true},
+  {"query": "有个对标账号的视频，我想做个同结构的，链接在这 https://v.douyin.com/abc123/", "should_trigger": true},
+
+  {"query": "帮我把这个抖音链接的视频下载下来，要无水印的", "should_trigger": false},
+  {"query": "把这条视频的文案提取出来给我看看", "should_trigger": false},
+  {"query": "我需要给这个视频配一段女声旁白，温柔的", "should_trigger": false},
+  {"query": "帮我设计一个视频封面，育儿赛道的，要点击率高的", "should_trigger": false},
+  {"query": "我想做一个原创视频，讲孩子发脾气怎么办，你有什么选题建议", "should_trigger": false},
+  {"query": "这个 mp4 帮我转成 gif，只要前 5 秒", "should_trigger": false},
+  {"query": "看看这条视频的各项数据，点赞收藏分享都多少", "should_trigger": false},
+  {"query": "把我们上个视频重新渲染一下，改成 1080p 的", "should_trigger": false},
+  {"query": "这段音频帮我转成文字，带时间戳的", "should_trigger": false},
+  {"query": "帮我把这个视频里的插画截图抠出来，我要做素材库", "should_trigger": false}
+]

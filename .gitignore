@@ -1,0 +1,34 @@
+# ===== 依赖 =====
+# 本仓 node_modules 合计 3.3G，占仓库体积的 97%，且可由 package-lock.json 还原
+node_modules/
+
+# ===== 渲染产物 =====
+# out/final.mp4 等都能从源码重新渲染出来
+out/
+
+# ===== 参考片 =====
+# reference/ 里是从抖音下载的他人作品（35M），公开发布有版权风险
+reference/
+
+# ===== 音乐素材库 =====
+# bgm/ 是从网易云下载的第三方音乐（14M）
+bgm/
+
+# ===== 密钥 =====
+# TTS key 存在 tools/tts/.env（格式见同目录 .env.example）
+.env
+
+# ===== 本地登录态 =====
+# 含抖音 cookie，泄漏会导致账号被接管
+.agents/skills/video-batch-download/douyin-storage-state.json
+
+# ===== skill 运行时状态 =====
+# Seedance skill 每次跑都会改写这个文件，提交了会一直产生噪音 diff
+.agents/skills/byted-ark-seedance-skill/.pending-tasks.json
+
+# ===== IDE / 系统 =====
+.idea/
+.trae/
+.DS_Store
+__pycache__/
+*.pyc

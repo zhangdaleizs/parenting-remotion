@@ -1,0 +1,11 @@
+[
+  { "text": "Daikon，白萝卜。",      "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s01.mp3" },
+  { "text": "carrot，胡萝卜。",      "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s02.mp3" },
+  { "text": "white gourd，冬瓜。",   "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s03.mp3" },
+  { "text": "loofah，丝瓜。",        "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s04.mp3" },
+  { "text": "tomato，西红柿。",      "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s05.mp3" },
+  { "text": "bitter gourd，苦瓜。",  "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s06.mp3" },
+  { "text": "eggplant，茄子。",      "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s07.mp3" },
+  { "text": "Chinese yam，山药。",   "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s08.mp3" },
+  { "text": "green bean，四季豆。",  "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s09.mp3" }
+]
