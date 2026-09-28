@@ -24,18 +24,16 @@ export type FruitRow = {
  * 音频复用「水果网格篇」已核验的同一批（词表、顺序完全相同）。
  */
 export const ROWS: FruitRow[] = [
-  { en: "apple",      ipa: "/ˈæpl/",       zh: "苹果",   img: "s01_apple.svg",      audioSeconds: 1.37 },
-  { en: "banana",     ipa: "/bəˈnɑːnə/",   zh: "香蕉",   img: "s02_banana.svg",     audioSeconds: 2.09 },
-  { en: "orange",     ipa: "/ˈɒrɪndʒ/",    zh: "橙子",   img: "s03_orange.svg",     audioSeconds: 1.93 },
-  { en: "grape",      ipa: "/ɡreɪp/",      zh: "葡萄",   img: "s04_grape.svg",      audioSeconds: 1.53 },
-  { en: "strawberry", ipa: "/ˈstrɔːbəri/", zh: "草莓",   img: "s05_strawberry.svg", audioSeconds: 2.99 },
-  { en: "watermelon", ipa: "/ˈwɔːtəmelən/", zh: "西瓜",  img: "s06_watermelon.svg", audioSeconds: 1.80 },
-  { en: "pear",       ipa: "/peə/",        zh: "梨",     img: "s07_pear.svg",       audioSeconds: 1.54 },
-  { en: "peach",      ipa: "/piːtʃ/",      zh: "桃子",   img: "s08_peach.svg",      audioSeconds: 1.38 },
-  { en: "cherry",     ipa: "/ˈtʃeri/",     zh: "樱桃",   img: "s09_cherry.svg",     audioSeconds: 1.63 },
-  { en: "mango",      ipa: "/ˈmæŋɡəʊ/",    zh: "芒果",   img: "s10_mango.svg",      audioSeconds: 2.07 },
-  { en: "kiwi",       ipa: "/ˈkiːwiː/",    zh: "猕猴桃", img: "s11_kiwi.svg",       audioSeconds: 1.93 },
-  { en: "pineapple",  ipa: "/ˈpaɪnæpəl/",  zh: "菠萝",   img: "s12_pineapple.svg",  audioSeconds: 1.65 },
+  { en: "apple",      ipa: "/ˈæpl/",        zh: "苹果",   img: "s01_apple.svg",      audioSeconds: 1.37 },
+  { en: "banana",     ipa: "/bəˈnɑːnə/",    zh: "香蕉",   img: "s02_banana.svg",     audioSeconds: 2.09 },
+  { en: "orange",     ipa: "/ˈɒrɪndʒ/",     zh: "橙子",   img: "s03_orange.svg",     audioSeconds: 1.93 },
+  { en: "grape",      ipa: "/ɡreɪp/",       zh: "葡萄",   img: "s04_grape.svg",      audioSeconds: 1.53 },
+  { en: "strawberry", ipa: "/ˈstrɔːbəri/",  zh: "草莓",   img: "s05_strawberry.svg", audioSeconds: 2.99 },
+  { en: "watermelon", ipa: "/ˈwɔːtəmelən/", zh: "西瓜",   img: "s06_watermelon.svg", audioSeconds: 1.80 },
+  { en: "peach",      ipa: "/piːtʃ/",       zh: "桃子",   img: "s07_peach.svg",      audioSeconds: 1.38 },
+  { en: "cherry",     ipa: "/ˈtʃeri/",      zh: "樱桃",   img: "s08_cherry.svg",     audioSeconds: 1.63 },
+  { en: "mango",      ipa: "/ˈmæŋɡəʊ/",     zh: "芒果",   img: "s09_mango.svg",      audioSeconds: 2.07 },
+  { en: "pineapple",  ipa: "/ˈpaɪnæpəl/",   zh: "菠萝",   img: "s10_pineapple.svg",  audioSeconds: 1.65 },
 ];
 
 /** 每行占用的帧数 = 该行音频帧数 + 缓冲 */
@@ -56,10 +54,10 @@ export const TOTAL_FRAMES = ROW_STARTS[ROW_STARTS.length - 1] + ROW_FRAMES[ROW_F
  *   容器 x 23–552 / y 200–916；行卡 x 46–530、高 64、步进 78
  *   行内三者**各自居中**：英文中心 x=151.5、缩略图 290–338、中文中心 x=457.5
  *
- * ⚠️ **本片 12 行 vs 样板的 9 行**，塞不进原来的容器，所以整体压缩重排：
- *   容器高 1336 → **1420**（同时上移 15px 多榨一点空间）
- *   行卡 122 → **98**、步进 146 → **116**（缩放系数 0.803）
- *   字号同比例：英文 60→48、音标 40→32、中文 60→48、缩略图 92→76、卡圆角 42→34
+ * ⚠️ **本片 10 行 vs 样板的 9 行**：容器加高到 1420 后行卡只比样板小一点（122 → **116**）：
+ *   容器高 1336 → **1420**（同时上移 15px 多榨空间）
+ *   行卡 122 → **116**、步进 146 → **139**（缩放系数 0.951）
+ *   字号同比例：英文 60→57、音标 40→38、中文 60→57、缩略图 92→87、卡圆角 42→40
  *   行内三者的 x 中心**保持不变**（198 / 503 / 772）—— 它们本来就是按卡宽 908 布置的，卡宽没变
  */
 export const LAYOUT = {
@@ -76,20 +74,20 @@ export const LAYOUT = {
 
   cardX: 86,
   cardW: 908,
-  cardH: 98,
-  cardStep: 116,
+  cardH: 116,
+  cardStep: 139,
   cardTop: 384,
-  cardRadius: 34,
+  cardRadius: 40,
 
   /** 以下均为「相对行卡左边」的偏移 */
   enCenterX: 198,
-  enFontSize: 48,
-  ipaFontSize: 32,
-  ipaGap: 6,
+  enFontSize: 57,
+  ipaFontSize: 38,
+  ipaGap: 8,
   thumbCenterX: 503,
-  thumbSize: 76,
+  thumbSize: 87,
   zhCenterX: 772,
-  zhFontSize: 48,
+  zhFontSize: 57,
 } as const;
 
 /** 色板（参考片逐像素取色） */

@@ -15,7 +15,7 @@ import { EN_FONT, ZH_FONT } from "../components/fonts";
 const PREVIEW = [
   { en: "strawberry", ipa: "/ˈstrɔːbəri/", zh: "草莓", img: "s05_strawberry.svg", hot: false },
   { en: "grape",      ipa: "/ɡreɪp/",      zh: "葡萄", img: "s04_grape.svg",      hot: true },
-  { en: "pineapple",  ipa: "/ˈpaɪnæpəl/",  zh: "菠萝", img: "s12_pineapple.svg",  hot: false },
+  { en: "pineapple",  ipa: "/ˈpaɪnæpəl/",  zh: "菠萝", img: "s10_pineapple.svg",  hot: false },
 ];
 
 type Cfg = {
@@ -163,7 +163,7 @@ export const CoverScene: React.FC<{ vertical?: boolean }> = ({ vertical = false 
           textShadow: "0 0 18px rgba(255,255,255,0.95), 0 0 36px rgba(255,255,255,0.8)",
         }}
       >
-        12 个水果 · 你家娃能记住几个？
+        10 个水果 · 你家娃能记住几个？
       </div>
     </AbsoluteFill>
   );
