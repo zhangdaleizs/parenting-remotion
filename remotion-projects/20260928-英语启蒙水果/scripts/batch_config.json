@@ -1,0 +1,14 @@
+[
+  { "text": "Apple，苹果。",        "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s01.mp3" },
+  { "text": "Banana，香蕉。",       "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s02.mp3" },
+  { "text": "Orange，橙子。",       "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s03.mp3" },
+  { "text": "Grape，葡萄。",        "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s04.mp3" },
+  { "text": "Strawberry，草莓。",   "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s05.mp3" },
+  { "text": "Watermelon，西瓜。",   "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s06.mp3" },
+  { "text": "Pear，梨。",           "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s07.mp3" },
+  { "text": "Peach，桃子。",        "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s08.mp3" },
+  { "text": "Cherry，樱桃。",       "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s09.mp3" },
+  { "text": "Mango，芒果。",        "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s10.mp3" },
+  { "text": "Kiwi，猕猴桃。",       "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s11.mp3" },
+  { "text": "Pineapple，菠萝。",    "voice_id": "zh_female_yingyujiaoyu_mars_bigtts", "speed_ratio": 1.1, "output": "vo/s12.mp3" }
+]
