@@ -13,6 +13,10 @@ reference/
 # ===== 音乐素材库 =====
 # bgm/ 是要提交的：flying-squirrel.mp3 是用户选定的常用 BGM（14M / 6 首）
 
+# ===== 图库搜图的中间产物 =====
+# sheet_*.png 是候选总览图，可由同目录的 cands.json 重新生成（8M 全是它）
+**/candidates/sheet_*.png
+
 # ===== 密钥 =====
 # TTS key 存在 tools/tts/.env（格式见同目录 .env.example）
 .env

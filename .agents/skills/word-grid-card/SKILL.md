@@ -195,9 +195,10 @@ TTS 原速每段有效语音约 2.3s，参考片只要 1.7s；加速后 12 段�
 脚本在 `word-list-card/scripts/find_images.py`（两个 skill 共用）：
 
 ```bash
-# 出候选总览图（Commons + Openverse 双源，自动按长宽比 0.72–1.4 过滤）
+# 出候选总览图（Pexels + Commons + Openverse 三源；Pexels 需 key 见下）
 python3 .agents/skills/word-list-card/scripts/find_images.py sheet \
-  --out /tmp/cand --terms "sweet=colorful macarons" "sour=lemons basket"
+  --out /tmp/cand --limit 18 --per-source 12 \
+  --terms "sweet=colorful macarons" "sour=lemon slices"
 
 # 人眼挑完（Read sheet_*.png）再取图
 python3 .agents/skills/word-list-card/scripts/find_images.py fetch \
@@ -206,26 +207,51 @@ python3 .agents/skills/word-list-card/scripts/find_images.py fetch \
   --prefix-map "sweet=s01_sweet" "sour=s02_sour"
 ```
 
-### 4.1 授权：脚本不过滤，靠总览图人工审
+### 4.1 Pexels key（质量最好的一路）
+
+**Pexels 是专业图库，食物/日常物品的图质远高于 Commons**，且 Pexels License
+**免费商用、不要求署名**，比 Commons 的 CC BY 省事。免费 key 去 https://www.pexels.com/api/ 申请。
+
+key 写仓库根 `.env`（已被 .gitignore 排除），脚本从自身位置向上逐级查找：
+
+```
+PEXELS_API_KEY=xxxxxxxx
+```
+
+没配 key 时这一路**静默跳过**，不影响其它源。
+
+### 4.2 检索方式：优先 `cat:` 分类
+
+自由文本匹配的是**词**不是**主体** —— 搜 `apple` 会返回苹果**叶**、苹果树、糖苹果，
+搜 `grape` 会返回英国**酒吧**（"Bunch of Grapes" 是酒吧常见店名，实测栽过）。
+
+加 `cat:` 前缀走 Commons 分类检索，精确得多：
+
+```bash
+--terms "apple=cat:Apples on white background|red apple" --quality
+```
+
+`--quality` 叠加 Commons 人工评审的 `incategory:"Quality images"`。
+⚠️ 白底分类**覆盖不全**（苹果/香蕉有，橙子/葡萄/樱桃/猕猴桃没有），此时只能靠自由文本 + 人眼。
+
+### 4.3 授权：脚本不过滤，靠总览图人工审
 
 **Commons 搜索结果里 CC BY-SA 往往占大多数**（实测某轮 12 张里 11 张是 BY-SA）。
 share-alike 有传染性 —— 严格说会要求整条视频以同协议发布，对商用账号是坑。
 
 **脚本不做过滤**，授权名直接标在 contact sheet 每格下方，挑图时自己看。
-（`LicenseShortName` 要查 API 才知道，光看搜索结果看不出来：`iiprop=extmetadata` 取，
-**批量查**，一次可传 40 个 title，别逐张查。）
 
-这样不会因为脚本写死的过滤规则错过好图，代价是**挑图时得留意每格下方的授权名**。
-
-产出要求：CC0 / Public Domain / CC BY 三类皆可，**CC BY 要在发布简介里署名**
+产出要求：**Pexels License 最省事**；CC0 / Public Domain 次之；**CC BY 要在发布简介里署名**
 （逐张列进 `release-info.md` 的授权表）；CC BY-SA 尽量避开。
 
-### 4.2 其它三个坑
+### 4.4 其它坑
 
 | 坑 | 真相 |
 |---|---|
-| **透明 PNG 变黑块** | 图库的 PNG（如辣椒）带 alpha，`convert("RGB")` 会把透明区填成**黑色**，贴到浅色卡片上就是一坨黑方块 → 先 `convert("RGBA")` → `alpha_composite(白底)` → `convert("RGB")` |
-| **Commons 限速 429** | 连续请求原图会被挡 → **别拉原图**，搜图时 API 给的 `iiurlwidth` 缩略图够用（最终只显示 ~104px）；请求间隔 1s + 退避重试 |
+| **长宽比阈值卡太死会砍掉大半图** | 曾用 0.72–1.4，实测把 **Pexels 78–88% 的图滤掉**（相机原生就是 3:2 / 2:3）→ 已放宽到 **0.6–1.8** |
+| **自动质量打分分不出主体对不对** | 试过按「背景干净+主体对比强」排序，结果给"白底上的苹果叶"打最高分。**别走这条路，靠人眼** |
+| **透明 PNG 变黑块** | 图库的 PNG（如辣椒）带 alpha，`convert("RGB")` 会把透明区填成**黑色** → 先 `convert("RGBA")` → `alpha_composite(白底)` → `convert("RGB")` |
+| **Commons 限速 429** | 连续请求会被挡 → 请求间隔 1s + 退避重试（脚本已内置）；缩略图够用就别拉原图 |
 | **搜食材出来的是料理成品 / 田间植株** | 必须拼 contact sheet **人眼看**，光看标题判断不了 |
 
 ---

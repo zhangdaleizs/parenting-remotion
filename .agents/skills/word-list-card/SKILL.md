@@ -193,19 +193,46 @@ atempo 只改时长不改音素，**不会破坏已经校验过的发音**。
 
 ## 第 4 步 · 图片素材（图库方案）
 
-**默认走免 key 的图库，不从参考片抠**（搬运他人素材有版权风险）。用本 skill 自带脚本：
+**默认走图库，不从参考片抠**（搬运他人素材有版权风险）。用本 skill 自带脚本：
 
 ### 4.1 出候选总览图
 
 ```bash
 python3 .agents/skills/word-list-card/scripts/find_images.py sheet \
-  --out /tmp/cand \
-  --terms "daikon=daikon radish|white radish" "carrot=carrot vegetable" "loofah=luffa gourd"
+  --out /tmp/cand --limit 18 --per-source 12 \
+  --terms "apple=red apple" "grape=green grapes" "carrot=carrot vegetable"
 ```
 
-- 两个来源自动都搜：**Wikimedia Commons**（质量高、偏标准照）+ **Openverse**（量大、质量参差）
+三个来源依次搜，**Pexels 质量最好、排在最前**：
+
+| 源 | key | 质量 | 授权 |
+|---|---|---|---|
+| **Pexels** | 需要（免费申请） | ⭐ 专业食物摄影 | Pexels License，**免费商用、不需署名** |
+| Wikimedia Commons | 免 key | 参差（百科档案，多随手拍） | CC0 / PD / CC BY / CC BY-SA 混杂 |
+| Openverse | 免 key | 参差（聚合 Flickr） | cc0 / pdm / by |
+
+**Pexels key 放仓库根 `.env`**（已被 .gitignore 排除），脚本从自身位置向上逐级查找，从任何目录调用都能读到：
+
+```
+PEXELS_API_KEY=xxxxxxxx
+```
+
+没配 key 时 Pexels 那路**静默跳过**，不影响其它源。
+
+**查询式的两种写法**：
+
+- **普通文本** → 走 Pexels + Commons + Openverse 三源
+  ⚠️ 自由文本匹配的是**词**不是**主体** —— 搜 `apple` 会返回苹果**叶**、苹果树、糖苹果；搜 `grape` 会返回英国**酒吧**（"Bunch of Grapes" 是酒吧常见店名）
+- **`cat:` 前缀** → 只走 Commons 分类检索，**精确命中主体，是质量最好的一路**
+  ```
+  --terms "apple=cat:Apples on white background|red apple"
+  ```
+  常用分类：`Apples on white background`(84) / `Bananas on white background`(63) /
+  `Malus domestica (fruit)`(44) / `Mangifera indica`(343) / `Citrus sinensis`(167)
+  ⚠️ 白底分类**覆盖不全** —— 苹果香蕉有，橙子/葡萄/樱桃/猕猴桃实测没有
+
+- 加 `--quality` 叠加 Commons 人工评审的 `incategory:"Quality images"`，滤掉随手拍
 - 一个词可给**多个查询式**（`|` 分隔）—— 单个词常搜不准，多给几个覆盖
-- 脚本已按**长宽比 0.72–1.4 过滤**（宽幅图中心裁方后只剩一条，主体会丢）
 - 输出 `sheet_<词>.png`（6 列网格，每格标了编号和授权）
 
 ### 4.2 人眼挑 + 取原图
@@ -214,20 +241,26 @@ Read 各 `sheet_*.png` 挑编号，然后：
 
 ```bash
 python3 .agents/skills/word-list-card/scripts/find_images.py fetch \
-  --out /tmp/cand --picks "daikon=0" "carrot=6" --size 256 \
+  --out /tmp/cand --picks "apple=3" "grape=5" --size 320 \
   --dest remotion-projects/<项目>/public/thumbs \
-  --prefix-map "daikon=s01_daikon" "carrot=s02_carrot"
+  --prefix-map "apple=s01_apple" "grape=s02_grape"
 ```
+
+`fetch` 下载的是**原图**（不是搜图时那 240px 缩略图）再中心方裁到 `--size`。
 
 ### 4.3 踩过的坑
 
 | 坑 | 真相 |
 |---|---|
-| **搜食材出来的是料理成品 / 田间植株** | 搜 `daikon radish` 返回一堆炖菜和汤；搜 `loofah` 全是丝瓜藤和菜架子。**必须拼 contact sheet 人眼看**，光看标题判断不了 |
+| **自由文本搜的是词不是主体** | `apple` → 苹果叶/苹果树/糖苹果；`grape` → 英国酒吧；`mango` → 可能全是树。**优先 `cat:` 分类检索**，或拼 contact sheet 人眼看 |
+| **自动质量打分解决不了"是不是苹果"** | 试过按「背景干净 + 主体对比强」打分排序，结果**给"白底上的苹果叶"打了最高分** —— 它只能测出"有个东西在白底上"，测不出主体对不对。**别走这条路，靠人眼** |
+| **长宽比阈值卡太死会砍掉大半图** | 曾经用 0.72–1.4，实测把 **Pexels 78–88% 的图直接滤掉** —— 因为相机原生比例就是 **3:2(1.5) 和 2:3(0.667)**。3:2 裁方还能保留 67% 宽度，不算极端，已放宽到 **0.6–1.8** |
+| **`fetch` 下成缩略图** | 曾经 `orig` 也填 thumb URL，导致落地图只有 240px。现已修成下原图 |
+| **搜食材出来的是料理成品 / 田间植株** | 搜 `daikon radish` 返回炖菜和汤；搜 `loofah` 全是丝瓜藤和菜架子。**必须拼 contact sheet 人眼看**，光看标题判断不了 |
 | **小图看不出问题** | 挑中的「丝瓜」放大后是干丝瓜络。**下载原图再确认一次**（脚本的 fetch 就是干这个） |
-| **Commons 缩略图尺寸改不动** | 把 URL 里的 `250px` 改成 400/640/800 一律 `400 Use thumbnail sizes listed on ...`。别折腾，用 API 给的尺寸即可（最终只显示 ~92px） |
-| **Commons 连续请求会被限流** | 搜出来 0 结果。脚本已内置 `sleep`，自己写脚本时也要加 |
-| **授权** | 脚本**不做过滤**，授权名印在 contact sheet 每格下方，挑图时自己审。CC0 / Public Domain 最干净；**CC BY 要在发布简介里署名**；CC BY-SA 有 copyleft 争议，尽量避开。`release-info.md` 的发布清单里留一条待办 |
+| **Commons 缩略图尺寸改不动** | 把 URL 里的 `250px` 改成 400/640/800 一律 `400 Use thumbnail sizes listed on ...`。别折腾，用 API 给的尺寸即可 |
+| **Commons 连续请求会被限流（429）** | 搜出来 0 结果。脚本已内置 `sleep`，自己写脚本时也要加 |
+| **授权** | 脚本**不做过滤**，授权名印在 contact sheet 每格下方，挑图时自己审。**Pexels License 最省事（免费商用、不需署名）**；CC0 / Public Domain 次之；**CC BY 要在发布简介里署名**；CC BY-SA 有 copyleft 争议，尽量避开。`release-info.md` 的发布清单里留一条待办 |
 
 ### 4.4 背景
 

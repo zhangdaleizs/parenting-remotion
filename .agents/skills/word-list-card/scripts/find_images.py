@@ -38,8 +38,32 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 UA = {"User-Agent": "parenting-remotion/1.0 (educational video)"}
-# 长宽比过滤：太宽的图中心裁方后只剩一条，主体会丢
-AR_MIN, AR_MAX = 0.72, 1.4
+# 长宽比过滤：太宽的图中心裁方后只剩一条，主体会丢。
+# ⚠️ 阈值不能卡太死：相机原生比例就是 **3:2(1.5) 和 2:3(0.667)**，
+#    曾经用 0.72–1.4 把 Pexels 78–88% 的图直接滤掉（实测 40 张只过 5-9 张）。
+#    3:2 裁方还能保留 67% 宽度，不算极端，所以放宽到 0.6–1.8。
+AR_MIN, AR_MAX = 0.6, 1.8
+
+
+def load_key(name):
+    """按「环境变量 → 向上逐级找 .env」的顺序取 key。
+
+    .env 放在仓库根（已被 .gitignore 排除），脚本从自身位置向上找，
+    所以不管从哪个目录调用都能读到。
+    """
+    v = os.environ.get(name)
+    if v:
+        return v.strip()
+    here = pathlib.Path(__file__).resolve().parent
+    for d in [here, *here.parents]:
+        f = d / ".env"
+        if not f.exists():
+            continue
+        for line in f.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if line.startswith(name + "="):
+                return line.split("=", 1)[1].strip().strip("'\"")
+    return ""
 
 
 def fetch(url, tries=3, timeout=35):
@@ -53,17 +77,8 @@ def fetch(url, tries=3, timeout=35):
             time.sleep(1.0 * (i + 1))
 
 
-def search_commons(q, n):
-    url = "https://commons.wikimedia.org/w/api.php?" + urllib.parse.urlencode({
-        "action": "query", "generator": "search", "gsrsearch": q,
-        "gsrnamespace": "6", "gsrlimit": str(n), "prop": "imageinfo",
-        "iiprop": "url|extmetadata", "iiurlwidth": "240", "format": "json",
-    })
-    try:
-        d = json.loads(fetch(url))
-    except Exception as e:
-        print(f"    commons 搜索失败 {q!r}: {e}", file=sys.stderr)
-        return []
+def _commons_pages(d, src):
+    """Commons 返回结构 → 候选列表（search 与 categorymembers 两种来源共用）。"""
     out = []
     for p in (d.get("query", {}).get("pages", {}) or {}).values():
         ii = (p.get("imageinfo") or [{}])[0]
@@ -78,9 +93,93 @@ def search_commons(q, n):
         out.append({
             "title": p["title"][5:],
             "thumb": t.split("?")[0],          # 去 query，否则后续会 400
-            "orig": t.split("?")[0],
+            # orig 必须是**原图**：曾经这里也填 thumb（240px 缩略图），
+            # 导致最终落地图只有 240px，缩略图一放大就糊
+            "orig": (ii.get("url") or t).split("?")[0],
             "lic": lic,
-            "src": "commons",
+            "src": src,
+        })
+    return out
+
+
+def search_commons(q, n, quality=False):
+    """自由文本搜索。
+
+    ⚠️ 自由文本匹配的是**词**不是**主体** —— 搜 `apple` 会返回苹果叶、苹果树、
+    糖苹果、甚至 Apple 公司产品；搜 `grape` 会返回英国酒吧（"Bunch of Grapes"
+    是常见店名）。要精确命中主体，优先用 search_commons_category()。
+    """
+    if quality:
+        # Commons 的「Quality images」是人工评审过的认证分类，叠加后基本能滤掉随手拍
+        q = f'{q} incategory:"Quality images"'
+    url = "https://commons.wikimedia.org/w/api.php?" + urllib.parse.urlencode({
+        "action": "query", "generator": "search", "gsrsearch": q,
+        "gsrnamespace": "6", "gsrlimit": str(n), "prop": "imageinfo",
+        "iiprop": "url|extmetadata", "iiurlwidth": "240", "format": "json",
+    })
+    try:
+        d = json.loads(fetch(url))
+    except Exception as e:
+        print(f"    commons 搜索失败 {q!r}: {e}", file=sys.stderr)
+        return []
+    return _commons_pages(d, "commons")
+
+
+def search_commons_category(cat, n):
+    """按 Commons 分类取图 —— 比自由文本精确得多。
+
+    常用分类形态（实测）：
+      `Apples on white background`(84)  `Bananas on white background`(63)
+        → 干净的白底产品图，做缩略图最理想
+      `Malus domestica (fruit)`(44)  `Mangifera indica`(343)  `Citrus sinensis`(167)
+        → 物种分类，量大但混有花/叶/树，配 quality=True 的自由文本查询一起用更好
+    ⚠️ 白底分类**覆盖不全** —— 苹果香蕉有，橙子/葡萄/樱桃/猕猴桃实测没有。
+    """
+    url = "https://commons.wikimedia.org/w/api.php?" + urllib.parse.urlencode({
+        "action": "query", "generator": "categorymembers",
+        "gcmtitle": f"Category:{cat}", "gcmtype": "file", "gcmlimit": str(n),
+        "prop": "imageinfo", "iiprop": "url|extmetadata", "iiurlwidth": "240",
+        "format": "json",
+    })
+    try:
+        d = json.loads(fetch(url))
+    except Exception as e:
+        print(f"    commons 分类失败 {cat!r}: {e}", file=sys.stderr)
+        return []
+    return _commons_pages(d, "commons-cat")
+
+
+def search_pexels(q, n):
+    """Pexels —— 专业图库，食物/日常物品的图质远高于 Commons。
+
+    需要免费 key（https://www.pexels.com/api/），写在仓库根 `.env` 的
+    `PEXELS_API_KEY=` 或同名环境变量里。没有 key 时静默跳过（不影响其它源）。
+
+    ⚠️ Pexels License 允许免费商用且**不要求署名**，比 Commons 的 CC BY 省事。
+    """
+    key = load_key("PEXELS_API_KEY")
+    if not key:
+        return []
+    url = "https://api.pexels.com/v1/search?" + urllib.parse.urlencode({
+        "query": q, "per_page": str(min(n, 80)),
+    })
+    try:
+        req = urllib.request.Request(url, headers={**UA, "Authorization": key})
+        d = json.loads(urllib.request.urlopen(req, timeout=35).read())
+    except Exception as e:
+        print(f"    pexels 搜索失败 {q!r}: {e}", file=sys.stderr)
+        return []
+    out = []
+    for r in d.get("photos", []):
+        src = r.get("src") or {}
+        if not src.get("medium"):
+            continue
+        out.append({
+            "title": (r.get("alt") or f"pexels {r.get('id')}")[:60],
+            "thumb": src["medium"],            # 350px，拼 contact sheet 用
+            "orig": src.get("large") or src["original"],   # 940px，落地够用
+            "lic": "Pexels License",
+            "src": "pexels",
         })
     return out
 
@@ -129,10 +228,16 @@ def cmd_sheet(a):
         name, _, q = spec.partition("=")
         rows = []
         for one in q.split("|"):                      # 一个词可给多个查询式
-            rows += search_commons(one, a.per_source)
-            time.sleep(1.0)                            # 别把 Commons 打限流
-            rows += search_openverse(one, a.per_source)
-            time.sleep(0.5)
+            one = one.strip()
+            if one.startswith("cat:"):                # cat:Apples on white background
+                # 分类检索：精确命中主体，是质量最好的一路
+                rows += search_commons_category(one[4:].strip(), a.per_source)
+            else:
+                rows += search_pexels(one, a.per_source)     # 有 key 才生效，质量最好
+                rows += search_commons(one, a.per_source, quality=a.quality)
+                time.sleep(1.0)                        # 别把 Commons 打限流
+                rows += search_openverse(one, a.per_source)
+            time.sleep(0.8)
         seen, uniq = set(), []
         for r in rows:
             if r["thumb"] in seen:
@@ -207,9 +312,13 @@ def main():
     s = sub.add_parser("sheet", help="出候选总览图")
     s.add_argument("--out", required=True, help="候选目录")
     s.add_argument("--terms", nargs="+", required=True,
-                   help='词名=查询式，多个查询式用 | 分隔；如 "daikon=daikon radish|white radish"')
-    s.add_argument("--limit", type=int, default=18, help="每词最多留多少候选（默认 18）")
-    s.add_argument("--per-source", type=int, default=8, help="每个来源每次取多少（默认 8）")
+                   help='词名=查询式，多个查询式用 | 分隔。'
+                        '查询式加 cat: 前缀走 Commons 分类检索（最精确），'
+                        '如 "apple=cat:Apples on white background|red apple fruit"')
+    s.add_argument("--limit", type=int, default=24, help="每词最多留多少候选（默认 24）")
+    s.add_argument("--per-source", type=int, default=12, help="每个来源每次取多少（默认 12）")
+    s.add_argument("--quality", action="store_true",
+                   help='叠加 Commons 的 incategory:"Quality images" 人工认证，滤掉随手拍')
     s.set_defaults(func=cmd_sheet)
 
     f = sub.add_parser("fetch", help="按编号取原图裁方")
