@@ -1,6 +1,6 @@
 export const FPS = 30;
 export const VIDEO_WIDTH = 1080;
-export const VIDEO_HEIGHT = 1440;
+export const VIDEO_HEIGHT = 1920;
 
 /** 卡片之间的缓冲（帧）。音频尾部静音之外再留这么多，段间才有呼吸 */
 export const ROW_GAP_FRAMES = 8;
@@ -62,35 +62,35 @@ export const TOTAL_FRAMES = ROW_STARTS[ROW_STARTS.length - 1] + ROW_FRAMES[ROW_F
  */
 export const LAYOUT = {
   /** 标题/副标题用「墨迹中心 y」定位（flex 居中容器，中心 ≈ 墨迹中心） */
-  titleCenterY: 62,
-  titleFontSize: 77,
-  subtitleCenterY: 165,
-  subtitleFontSize: 51,
+  titleCenterY: 95,
+  titleFontSize: 88,
+  subtitleCenterY: 210,
+  subtitleFontSize: 58,
 
-  gridX: 114,
-  gridY: 206,
+  gridX: 40,
+  gridY: 265,
   cols: 3,
-  cardW: 261,
-  cardH: 253,
-  colStep: 295,
-  rowStep: 302,
-  cardRadius: 22,
+  cardW: 310,
+  cardH: 350,
+  colStep: 345,
+  rowStep: 410,
+  cardRadius: 26,
 
   /**
    * 以下均为「相对卡顶 / 卡左」的偏移。卡内自上而下：图 → 英文 → 音标 → 中文。
    * 音标紧跟英文成一组（它是英文的注音），中文单独一行并与这组拉开距离。
    */
-  imgSize: 104,
-  imgRadius: 15,
-  imgCenterY: 58,
-  enCenterY: 138,
-  enFontSize: 54,
-  /** 英文可用的最大宽度（卡宽 261 减左右留白）—— 超过就自动缩字号 */
-  enMaxWidth: 238,
-  ipaCenterY: 176,
-  ipaFontSize: 30,
-  zhCenterY: 228,
-  zhFontSize: 40,
+  imgSize: 132,
+  imgRadius: 18,
+  imgCenterY: 76,
+  enCenterY: 185,
+  enFontSize: 64,
+  /** 英文可用的最大宽度（卡宽 310 减左右留白）—— 超过就自动缩字号 */
+  enMaxWidth: 286,
+  ipaCenterY: 235,
+  ipaFontSize: 36,
+  zhCenterY: 295,
+  zhFontSize: 50,
 } as const;
 
 /** 色板：底与卡沿用本项目已建立的紫底体系（与参考片的米黄底刻意不同） */

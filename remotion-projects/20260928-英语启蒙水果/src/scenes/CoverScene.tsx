@@ -28,14 +28,14 @@ export const CoverScene: React.FC<{ vertical?: boolean }> = ({ vertical = false 
   const { width } = useVideoConfig();
 
   const C: Cfg = vertical
-    ? { eyebrowY: 150, eyebrowSize: 42, titleY: 246, titleSize: 92,
-        panelY: 470, cardW: 286, cardH: 264, colStep: 314, rowStep: 312,
-        imgSize: 96, cardRadius: 26, enSize: 46, ipaSize: 26, zhSize: 36,
-        footY: 1250, footSize: 54 }
-    : { eyebrowY: 108, eyebrowSize: 46, titleY: 200, titleSize: 118,
-        panelY: 396, cardW: 372, cardH: 338, colStep: 410, rowStep: 372,
-        imgSize: 124, cardRadius: 30, enSize: 58, ipaSize: 33, zhSize: 46,
-        footY: 1230, footSize: 60 };
+    ? { eyebrowY: 200, eyebrowSize: 46, titleY: 312, titleSize: 92,
+        panelY: 560, cardW: 300, cardH: 366, colStep: 335, rowStep: 400,
+        imgSize: 110, cardRadius: 28, enSize: 50, ipaSize: 28, zhSize: 40,
+        footY: 1660, footSize: 62 }
+    : { eyebrowY: 90, eyebrowSize: 42, titleY: 175, titleSize: 100,
+        panelY: 310, cardW: 340, cardH: 300, colStep: 375, rowStep: 320,
+        imgSize: 96, cardRadius: 26, enSize: 44, ipaSize: 25, zhSize: 34,
+        footY: 980, footSize: 54 };
 
   const COLS = 3;
   const { imgSize, cardRadius, enSize, ipaSize, zhSize } = C;

@@ -21,7 +21,7 @@ export const RemotionRoot: React.FC = () => (
       durationInFrames={1}
       fps={FPS}
       width={1920}
-      height={1440}
+      height={1080}
       defaultProps={{ vertical: false }}
     />
     <Composition
@@ -30,7 +30,7 @@ export const RemotionRoot: React.FC = () => (
       durationInFrames={1}
       fps={FPS}
       width={1080}
-      height={1440}
+      height={1920}
       defaultProps={{ vertical: true }}
     />
   </>
