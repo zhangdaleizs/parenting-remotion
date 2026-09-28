@@ -155,8 +155,9 @@ y=1711  └ 容器底；下方是重度虚化的食材照片
   退出是**硬切**回米白（源片实测帧 54 还是橙、帧 55 就是米白），不是反向渐变
 - **音频模式**：每个词念「**英文单词 → 中文释义**」各一遍（源片每段有效语音仅 1.35s）
 - **标题与列表全程常驻**，无入场动画（源片第 0 帧即在场）
-- **素材走图库**（Wikimedia Commons + Openverse，可筛 CC0/PDM/CC-BY）—— 缩略图只有 92px，
-  不需要 AI 生图；详见坑表两条「图库选图」
+- **素材：具象词优先走 `emoji-assets` skill**（Twemoji/OpenMoji，天然透明底、风格统一、
+  单张 ~1KB —— 比图库实拍图省事得多，且不会混进「料理成品/田间植株」）；emoji 覆盖不到的
+  词才走图库（Wikimedia Commons + Openverse，可筛 CC0/PDM/CC-BY），详见坑表两条「图库选图」
 - **字体实测**：英文 `Arimo` **400**（Google Fonts，Arial 度量兼容）、中文苹方 700、
   **音标是同字体的正体 400**（⚠️ 源片音标**不是斜体**，别顺手加 `fontStyle: "italic"`）——
   系统字体栈在 headless Chrome 里会 fallback 成过粗字形（见坑表）
@@ -193,10 +194,20 @@ y=1365  └ 网格底 ┘
 - **高亮**：卡音频起点 **+6 帧**开始，米白→亮橙 15 帧，退出**硬切**（与「单词列表高亮型」同规则）
 - **音标**：参考片卡片里**没有音标**，是这类视频可以加的增量。取**英式**（配 Tina老师 中/英式英语音色），
   按牛津体例去掉可选 (r) —— `sour /ˈsaʊə/`、`bitter /ˈbɪtə/`、`burned /bɜːnd/`
-- **素材走图库**（Wikimedia Commons）—— 授权名标在 contact sheet 上，挑图时自己审，见坑表「图库选图混进 CC BY-SA」
+- **素材走图库**（Wikimedia Commons）—— ⚠️ 味道词是**抽象词，emoji 覆盖不到**
+  （实测 `fetch_emoji.py list sour` 命中 0 条），只能实拍图；授权名标在 contact sheet 上，
+  挑图时自己审，见坑表「图库选图混进 CC BY-SA」
 - 色板：底 `#E8E0F4`（+ 径向渐变 + 噪点，**刻意不同于源片的米黄 `#FCF9E3`**）/ 卡 `#FEF4E2` / 高亮 `#FE902C`
-- 样板：`remotion-projects/20260927-英语启蒙味道`（12 卡 / 23.85s，源片 20.53s）
-- 完整分镜与参数见该项目的 `docs/storyboard.md` + `docs/release-info.md`
+- ⚠️ **长单词会溢出卡片**：卡宽只有 261px，`strawberry` / `watermelon`（10 字母）在 54px 下
+  超出卡宽。味道篇最长词 6 字母（crispy）所以没暴露，水果篇才踩到 ——
+  解法是 `WordGrid.tsx` 的 `fitEnFontSize()`：按估算宽度（Arimo 600 ≈ 0.56em/字符）
+  等比缩到 `LAYOUT.enMaxWidth`(238px) 放得下为止
+- **样板的两种素材路线**（同形态，差异只在配图）：
+  - `remotion-projects/20260927-英语启蒙味道`（12 卡 / 23.85s，源片 20.53s）—— **抽象词**（味道），
+    走图库实拍图（Commons，含 CC BY）
+  - `remotion-projects/20260928-英语启蒙水果`（12 卡 / 25.30s）—— **具象词**（水果），
+    走 **Twemoji 矢量图标**（`emoji-assets` skill，CC-BY 4.0 需署名）
+- 完整分镜与参数见各项目的 `docs/storyboard.md` + `docs/release-info.md`
 
 ---
 
@@ -206,7 +217,7 @@ y=1365  └ 网格底 ┘
 parenting-remotion/
 ├── CLAUDE.md                  # 本文件（唯一事实源）
 ├── skills-lock.json           # skills 来源锁定（8 个 GitHub skills）
-├── .agents/skills/            # 本仓 skills 实体（13 个）
+├── .agents/skills/            # 本仓 skills 实体
 ├── .claude/skills/            # 符号链接 → .agents/skills
 ├── bgm/                       # BGM 素材库
 ├── sfx/                       # 音效母本库（21 个 wav，程序化合成产物）
@@ -225,7 +236,8 @@ parenting-remotion/
     ├── 20260925-英语启蒙问候语/  # 英语启蒙歌谣卡样板（复刻抖音 63s，全 SVG 场景，见「英语启蒙歌谣卡结构」）
     ├── 20260926-英语启蒙数字/    # 歌谣卡的参数化变体（去掉角色、单场景 + 物件/数量驱动）
     ├── 20260927-英语启蒙蔬菜/    # 单词列表高亮型样板（复刻抖音 16.3s，见「单词列表高亮型结构」）
-    └── 20260927-英语启蒙味道/    # 单词网格高亮型样板（复刻抖音 20.5s，3×4 网格 + 音标，见「单词网格高亮型结构」）
+    ├── 20260927-英语启蒙味道/    # 单词网格高亮型样板·抽象词（复刻抖音 20.5s，3×4 网格 + 音标，配图走图库）
+    └── 20260928-英语启蒙水果/    # 单词网格高亮型样板·具象词（12 水果 + 音标，配图走 Twemoji 矢量图标）
 ```
 
 ### 单个视频项目结构约定
@@ -646,7 +658,7 @@ mv out/final_norm.mp4 out/final.mp4
 - **流程**：`word-list-card`（**单词列表高亮型完整开发流程**，单列 N 行词卡 + 逐行高亮，8 阶段含验收标准；**内含 `scripts/find_images.py` —— 免 key 图库搜图工具**，Commons + Openverse 搜索、长宽比过滤、**授权名标注（不过滤，人工审）**、拼 contact sheet、裁方取图）
 - **流程**：`word-grid-card`（**单词网格高亮型完整开发流程**，3×4 网格 + 逐卡高亮 + 卡内音标，8 阶段含验收标准。`word-list-card` 的**网格变体**：动画逻辑同源，差异在布局 / 卡内四段 / 无外层容器；搜图复用上面的 `find_images.py`）
 - **技术**：`remotion-best-practices`、`remotion-create`、`remotion-render`、`remotion-markup`、`remotion-captions`、`mediabunny`
-- **素材**：`bgm`（BGM）、`tts`（配音）、`douyin-downloader`、`video-batch-download`（拆参考视频）
+- **素材**：`bgm`（BGM）、`tts`（配音）、`douyin-downloader`、`video-batch-download`（拆参考视频）、`emoji-assets`（**Twemoji/OpenMoji 矢量素材** —— 单词卡的**具象词**（水果/蔬菜/动物/颜色）首选，天然透明底、风格统一、单张 ~1KB。抽象词覆盖不到，见「图片素材怎么选」）
 - **动画/规范**：`disney-animation-rule-skill`、`high-end-visual-design`
 - **封面**：`remotion-cover`（⚠️ 黑板版视觉，需改造）
 
